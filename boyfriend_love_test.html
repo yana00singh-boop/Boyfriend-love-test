@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boyfriend Love Test ❤️</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ffe6ef,#fff5f8);color:#4a2632;min-height:100vh}
+.card{width:min(92%,720px);margin:30px auto;background:#fff;border-radius:28px;padding:28px;box-shadow:0 15px 45px rgba(150,60,90,.18)}
+.hidden{display:none}
+h1{text-align:center;color:#d6336c;margin-bottom:8px}
+h2{color:#c2255c}
+.subtitle{text-align:center;color:#8b5b68}
+.lock{text-align:center;padding:45px 20px}
+.lock-icon{font-size:60px}
+input{width:100%;padding:15px;border:2px solid #f3b6ca;border-radius:14px;font-size:16px;outline:none}
+button{border:0;border-radius:14px;padding:13px 20px;background:#e64980;color:white;font-weight:bold;cursor:pointer;font-size:15px}
+button:hover{opacity:.9}
+#unlockBtn{width:100%;margin-top:12px}
+.error{color:#d00045;margin-top:10px;font-size:14px}
+.question{padding:18px;margin:15px 0;border-radius:18px;background:#fff0f5;border:1px solid #ffd0df}
+.question p{font-weight:bold;margin-top:0}
+.options{display:flex;gap:9px;flex-wrap:wrap}
+.option{background:white;color:#7b3048;border:2px solid #f2b5c9}
+.option.selected{background:#e64980;color:white;border-color:#e64980}
+#submit{width:100%;margin-top:20px;font-size:17px}
+.score{text-align:center;padding:25px;background:#fff0f5;border-radius:22px}
+.big{font-size:50px;color:#d6336c;font-weight:bold}
+.heart{position:fixed;top:-20px;font-size:22px;animation:fall 5s linear infinite;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+.small{font-size:13px;color:#8d6873;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="lock" class="card lock">
+  <div class="lock-icon">🔐</div>
+  <h1>Boyfriend Love Test ❤️</h1>
+  <p class="subtitle">This test is specially made for you, my love.</p>
+  <p><b>ACCESS LOCKED</b></p>
+  <p>Enter the secret password to unlock your test.</p>
+  <input id="password" type="password" placeholder="Enter password">
+  <button id="unlockBtn">💗 Unlock My Test</button>
+  <div id="error" class="error"></div>
+  <p class="small">Hint: Something I hope you say to me every day. 🥹❤️</p>
+</div>
+
+<div id="test" class="card hidden">
+<h1>💗 HOW MUCH DO YOU LOVE ME? 💗</h1>
+<p class="subtitle">Answer honestly, boyfriend. I’m watching. 👀😂</p>
+<div id="questions"></div>
+<button id="submit">🏆 Reveal My Love Score</button>
+</div>
+
+<div id="result" class="card hidden">
+<div class="score">
+<h1>🎉 TEST COMPLETE! 🎉</h1>
+<div id="score" class="big"></div>
+<h2 id="resultTitle"></h2>
+<p id="resultText"></p>
+<p>❤️ No matter the score, remember: I love you more than you know. 🥹❤️</p>
+<button onclick="location.reload()">🔄 Take It Again</button>
+</div>
+</div>
+
+<script>
+const questions = [
+"Do you genuinely love me, or are you just addicted to my presence? 😏",
+"If loving me was a full-time job, would you still choose overtime? ❤️",
+"Do you want us to be together forever—even when I’m extremely annoying? 😂",
+"Do you miss me when we haven't talked for a while? 🥺",
+"Do you see me in your future? ❤️",
+"Would you choose me again if you had to start our relationship all over again? 💕",
+"Do you secretly smile when you see my name pop up on your phone? 📱😌",
+"Do you ever look at my pictures for absolutely no reason? 👀😂",
+"Do you want me beside you during your biggest life moments? ❤️",
+"Would you want to grow old with me? 👵🏻👴🏻💕",
+"Do you want children with me someday? 👶❤️",
+"Do you think I’m the person you can tell absolutely everything to? 🫶",
+"Would you choose a boring day with me over an exciting day without me? 🥰",
+"If I said “I’m fine,” would you know that I’m probably NOT fine? 😂",
+"Do you think I’m your favourite person—even when I’m testing your patience? 😏❤️",
+"Who is more stubborn—me or you? 😈",
+"If we had an argument, would you be willing to apologize first sometimes? 😏",
+"Would you survive one whole week without talking to me? 😂",
+"If I asked, “Do you love me more than yesterday?” would your answer always be YES? ❤️",
+"Are you absolutely, ridiculously, hopelessly in love with me? 🥹❤️"
+];
+
+const container=document.getElementById("questions");
+questions.forEach((q,i)=>{
+ const div=document.createElement("div");
+ div.className="question";
+ div.innerHTML=`<p>${i+1}. ${q}</p><div class="options"></div>`;
+ const opts= i===15 ? ["Me","You","Maybe both 😂"] : ["Yes","No","Maybe"];
+ opts.forEach(o=>{
+   const b=document.createElement("button");
+   b.className="option"; b.textContent=o; b.type="button";
+   b.onclick=()=>{
+     [...div.querySelectorAll(".option")].forEach(x=>x.classList.remove("selected"));
+     b.classList.add("selected"); div.dataset.answer=o;
+   };
+   div.querySelector(".options").appendChild(b);
+ });
+ container.appendChild(div);
+});
+
+document.getElementById("unlockBtn").onclick=unlock;
+document.getElementById("password").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
+function unlock(){
+ if(document.getElementById("password").value==="iloveyou"){
+   document.getElementById("lock").classList.add("hidden");
+   document.getElementById("test").classList.remove("hidden");
+   hearts();
+ }else document.getElementById("error").textContent="Wrong password 😏 Try again, boyfriend!";
+}
+
+document.getElementById("submit").onclick=()=>{
+ const qs=[...document.querySelectorAll(".question")];
+ if(qs.some(q=>!q.dataset.answer)){alert("You have to answer every question, boyfriend! 😏❤️");return;}
+ let score=0;
+ qs.forEach((q,i)=>{
+   const a=q.dataset.answer;
+   if(i===15) score += a==="Me" ? 2 : a==="You" ? 2 : 1;
+   else score += a==="Yes" ? 2 : a==="Maybe" ? 1 : 0;
+ });
+ document.getElementById("test").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("score").textContent=score+"/40 ❤️";
+ let title,text;
+ if(score>=36){title="🥹 Hopelessly In Love!";text="Congratulations! You officially passed with flying colours. You’re ridiculously in love with me — and honestly, I knew it. ❤️";}
+ else if(score>=30){title="💕 Certified Lover Boy!";text="Okayyy, you really love me! But I’m still going to keep testing you. 😏❤️";}
+ else if(score>=20){title="👀 Suspicious Boyfriend!";text="Hmm… we need to have a little talk. 😂 Better start giving your girlfriend some extra love!";}
+ else{title="🚨 BOYFRIEND UNDER REVIEW!";text="Password privileges temporarily suspended. Please report to your girlfriend immediately. 😂❤️";}
+ document.getElementById("resultTitle").textContent=title;
+ document.getElementById("resultText").textContent=text;
+};
+
+function hearts(){
+ for(let i=0;i<15;i++){
+   const h=document.createElement("div");h.className="heart";h.textContent="❤️";
+   h.style.left=Math.random()*100+"vw";h.style.animationDelay=Math.random()*3+"s";
+   document.body.appendChild(h);setTimeout(()=>h.remove(),8000);
+ }
+}
+</script>
+</body>
+</html>
